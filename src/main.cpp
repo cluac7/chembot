@@ -47,6 +47,19 @@ std::vector<std::vector<std::string>> get_tasks_due_tmrw() {
       }
     }
 
+    for (auto& task : tasks) {
+        std::tm task_tm;
+        std::istringstream ss(task.first);
+        ss >> std::get_time(&task_tm, "%Y-%m-%d");
+
+        if (task_tm.tm_year == local_time_tmrw->tm_year && 
+            task_tm.tm_mon == local_time_tmrw->tm_mon && 
+            task_tm.tm_mday == local_time_tmrw->tm_mday) {
+                tasks_due_tmrw.push_back(task.second);
+        }
+    }
+
+    return tasks_due_tmrw;
 }
 
 
