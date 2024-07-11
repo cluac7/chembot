@@ -1,0 +1,3 @@
+/home/rahul/Documents/chembot/build/CMakeFiles/chemistry-bot.dir
+/home/rahul/Documents/chembot/build/CMakeFiles/edit_cache.dir
+/home/rahul/Documents/chembot/build/CMakeFiles/rebuild_cache.dir
