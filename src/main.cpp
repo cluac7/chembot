@@ -63,10 +63,15 @@ std::vector<std::vector<std::string>> get_tasks_due_tmrw() {
 }
 
 
-int main() {    
+
+int main() {
     dpp::cluster bot(BOT_TOKEN);
 
+    bot.on_log(dpp::utility::cout_logger());
+
     bot.on_slashcommand([&bot](const dpp::slashcommand_t& event) {
+
+        if (event.command.get_command_name() == "addtask") {
             std::string date = std::get<std::string>(event.get_parameter("date"));
             std::string name = std::get<std::string>(event.get_parameter("name"));
             std::string link = "";
@@ -75,10 +80,9 @@ int main() {
             tasks.insert({date, {name, link}});
 
             event.reply("Added task \"" + name + "\"! I'll remind everyone a day before it's due.");
+        }
     });
 
-
-    bot.on_log(dpp::utility::cout_logger());
     bot.on_ready([&bot](const dpp::ready_t& event) {
         if (dpp::run_once<struct register_bot_commands>()) {
 
@@ -94,5 +98,23 @@ int main() {
 
     bot.start(true);
 
-    return 0;
+    while (true) {
+        auto tasks_due_tmrw = get_tasks_due_tmrw();
+        if (tasks_due_tmrw.empty()) {
+            std::this_thread::sleep_for(std::chrono::hours(24));
+            continue;
+        }
+        std::string message = "@here Tasks due tomorrow:\n";
+        for (auto& task : tasks_due_tmrw) {
+            message += "- " + task[0];
+            if (task[1].size() > 1) {
+                message += ", find it at [link](" + task[1] + ")";
+            }
+            message += "\n";
+        }
+        bot.message_create(dpp::message(1055140777421971480, message));
+        std::this_thread::sleep_for(std::chrono::hours(24));
+    }
 }
+
+
