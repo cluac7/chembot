@@ -10,6 +10,24 @@ const std::string BOT_TOKEN = std::getenv("BOT_TOKEN");
 
 std::unordered_multimap<std::string, std::vector<std::string>> tasks;
 
+bool isLeapYear(int year) {
+  if (year % 400 == 0) return true;
+  if (year % 100 == 0) return false;
+  return year % 4 == 0;
+}
+
+int daysInMonth(int month, int year) {
+  // Array for days in each month (except February)
+  static const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+  // Handle February separately (considering leap years)
+  if (month == 2) {
+    return isLeapYear(year) ? 29 : 28;
+  }
+
+  // Return days from the array for other months
+  return days[month - 1];
+}
 
 
 int main() {    
