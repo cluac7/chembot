@@ -29,6 +29,26 @@ int daysInMonth(int month, int year) {
   return days[month - 1];
 }
 
+std::vector<std::vector<std::string>> get_tasks_due_tmrw() {
+    std::vector<std::vector<std::string>> tasks_due_tmrw;
+
+    time_t now = time(nullptr);
+    tm *local_time_tmrw = localtime(&now);
+    // Increment day
+    local_time_tmrw->tm_mday++;
+    // Check if it overflows the current month's days
+    if (local_time_tmrw->tm_mday > daysInMonth(local_time_tmrw->tm_mon + 1, local_time_tmrw->tm_year + 1900)) {
+      // Overflow, move to next month and potentially next year
+      local_time_tmrw->tm_mday = 1;
+      local_time_tmrw->tm_mon++;
+      if (local_time_tmrw->tm_mon == 12) {
+        local_time_tmrw->tm_mon = 0;
+        local_time_tmrw->tm_year++;
+      }
+    }
+
+}
+
 
 int main() {    
     dpp::cluster bot(BOT_TOKEN);
